@@ -83,6 +83,8 @@ type JsonValue with
         result
 
 let private frameworkPreference = [
+    "net5.0", "net5.0";
+
     "netcoreapp3.1", ".NETCoreApp,Version=v3.1";
     "netcoreapp3.0", ".NETCoreApp,Version=v3.0";
     "netcoreapp2.2", ".NETCoreApp,Version=v2.2";
@@ -150,7 +152,7 @@ let private parseProjectAssets(projectAssetsJson: FileInfo): ProjectAssets =
         let mutable inRuntimeBlock = false
         for rawLine in stdout do
             let line = rawLine.Trim()
-            if line = ".NET Core runtimes installed:" then
+            if line = ".NET runtimes installed:" then
                 inRuntimeBlock <- true
             elif line = "" then
                 inRuntimeBlock <- false
@@ -287,7 +289,13 @@ let private parseProjectAssets(projectAssetsJson: FileInfo): ProjectAssets =
         let version = chooseVersion(name)
         let dep = {name=name; version=version}
         findTransitiveDeps(dep)
-    let [| _; longFrameworkVersion |] = longFramework.Split("Version=v")
+
+    let longFrameworkVersion =
+        if longFramework = "net5.0" then
+            longFramework.Split("net").[1]
+        else
+            longFramework.Split("Version=v").[1]
+
     let (frameworkMajorVersion, frameworkMinorVersion) = parseVersion longFrameworkVersion
     let selectedRuntimes = Dictionary<string * int, CoreRuntime>()
     let runtimes = findRuntimePaths()
