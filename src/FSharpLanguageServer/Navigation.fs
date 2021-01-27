@@ -12,7 +12,8 @@ namespace FSharpLanguageServer
 
 open FSharp.Compiler.SourceCodeServices
 open FSharp.Compiler.Range
-open FSharp.Compiler.Ast
+open FSharp.Compiler.SyntaxTree
+open FSharp.Compiler.SyntaxTreeOps
 
 /// Represents an item to be displayed in the navigation bar
 [<Sealed>]

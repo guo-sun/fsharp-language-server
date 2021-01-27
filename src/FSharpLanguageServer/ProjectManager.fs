@@ -348,7 +348,8 @@ type ProjectManager(checker: FSharpChecker) =
     /// Find all .fsproj files referenced by a .sln file
     let slnProjectReferences (sln: FileInfo): list<FileInfo> =
         // From https://github.com/OmniSharp/omnisharp-roslyn/blob/master/src/OmniSharp.MSBuild/SolutionParsing/ProjectBlock.cs
-        let projectHeader = Regex(
+        let projectHeader =
+            Regex(
                 "^" // Beginning of line
                 + "Project\\(\"(?<PROJECTTYPEGUID>.*)\"\\)"
                 + "\\s*=\\s*" // Any amount of whitespace plus "=" plus any amount of whitespace

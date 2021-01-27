@@ -8,7 +8,7 @@ open System.IO
 open LSP.Types
 open FSharp.Data
 
-module Ast = FSharp.Compiler.Ast
+module Ast = FSharp.Compiler.SyntaxTree
 
 /// Convert an F# Compiler Services 'FSharpErrorInfo' to an LSP 'Range'
 let private errorAsRange(err: FSharpErrorInfo): Range = 

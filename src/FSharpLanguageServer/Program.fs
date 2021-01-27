@@ -14,7 +14,7 @@ open FSharp.Data
 open FSharp.Data.JsonExtensions
 open Conversions
 
-module Ast = FSharp.Compiler.Ast
+module Ast = FSharp.Compiler.SyntaxTree
 
 let private TODO() = raise (Exception "TODO")
 

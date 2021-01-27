@@ -122,7 +122,7 @@ let private find(xmlFile: FileInfo, memberName: string): CachedMember option =
 let docComment(doc: FSharpXmlDoc): string option =
     match doc with
     | FSharpXmlDoc.None -> None
-    | FSharpXmlDoc.Text(s) -> Some(s)
+    | FSharpXmlDoc.Text (simpleLines, xmlLines) -> Some (String.concat "\n" simpleLines)
     | FSharpXmlDoc.XmlDocFileSignature(dllPath, memberName) ->
         let xmlFile = FileInfo(Path.ChangeExtension(dllPath, ".xml"))
         match find(xmlFile, memberName) with 
@@ -144,7 +144,7 @@ let docComment(doc: FSharpXmlDoc): string option =
 let docSummaryOnly(doc: FSharpXmlDoc): string option = 
     match doc with
     | FSharpXmlDoc.None -> None
-    | FSharpXmlDoc.Text(s) -> Some(s)
+    | FSharpXmlDoc.Text (simpleLines, xmlLines) -> Some (String.concat "\n" simpleLines)
     | FSharpXmlDoc.XmlDocFileSignature(dllPath, memberName) ->
         let xmlFile = FileInfo(Path.ChangeExtension(dllPath, ".xml"))
         match find(xmlFile, memberName) with 
@@ -157,7 +157,7 @@ let private overloadComment(docs: FSharpXmlDoc list): string option =
         for doc in docs do 
             match doc with 
             | FSharpXmlDoc.None -> ()
-            | FSharpXmlDoc.Text(s) -> yield s
+            | FSharpXmlDoc.Text (simpleLines, xmlLines) -> yield (String.concat "\n" simpleLines)
             | FSharpXmlDoc.XmlDocFileSignature(dllPath, memberName) -> 
                 let xmlFile = FileInfo(Path.ChangeExtension(dllPath, ".xml"))
                 match find(xmlFile, memberName) with 
