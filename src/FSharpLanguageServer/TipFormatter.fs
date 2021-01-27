@@ -84,25 +84,29 @@ let private ensure(xmlFile: FileInfo) =
             // The extension of these files is .xml, but they seem to actually be HTML
             // For example, they contain unclosed <p> tags
             let html = new HtmlDocument()
-            html.Load(xmlFile.FullName)
-            // Find all members
-            for m in html.DocumentNode.Descendants("member") do 
-                convertSpecialTagsToMarkdown(m)
-                let name = m.GetAttributeValue("name", "")
-                let summary = [for e in m.Descendants("summary") do yield e.InnerHtml]
-                let parameters = [for e in m.Descendants("param") do yield e.GetAttributeValue("name", ""), e.InnerHtml]
-                let returns = [for e in m.Descendants("returns") do yield e.InnerHtml]
-                let exceptions = [for e in m.Descendants("exception") do yield cref(e), e.InnerHtml]
-                parsed.TryAdd(name, {
-                    summary = List.tryHead(summary)
-                    parameters = parameters 
-                    returns = List.tryHead(returns) 
-                    exceptions = exceptions
-                }) |> ignore
-                cache.TryAdd(xmlFile.FullName, {
-                    members = parsed 
-                    loadTime = xmlFile.LastWriteTime
-                }) |> ignore
+
+            try 
+                html.Load(xmlFile.FullName)
+                // Find all members
+                for m in html.DocumentNode.Descendants("member") do 
+                    convertSpecialTagsToMarkdown(m)
+                    let name = m.GetAttributeValue("name", "")
+                    let summary = [for e in m.Descendants("summary") do yield e.InnerHtml]
+                    let parameters = [for e in m.Descendants("param") do yield e.GetAttributeValue("name", ""), e.InnerHtml]
+                    let returns = [for e in m.Descendants("returns") do yield e.InnerHtml]
+                    let exceptions = [for e in m.Descendants("exception") do yield cref(e), e.InnerHtml]
+                    parsed.TryAdd(name, {
+                        summary = List.tryHead(summary)
+                        parameters = parameters 
+                        returns = List.tryHead(returns) 
+                        exceptions = exceptions
+                    }) |> ignore
+                    cache.TryAdd(xmlFile.FullName, {
+                        members = parsed 
+                        loadTime = xmlFile.LastWriteTime
+                    }) |> ignore
+            with
+            | _ -> dprintfn "Couldn't load xml file %s" xmlFile.FullName
 
 /// Find the documentation for `memberName` inside of `xmlFile`
 let private find(xmlFile: FileInfo, memberName: string): CachedMember option = 
